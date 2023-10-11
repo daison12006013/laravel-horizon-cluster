@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+*.md diff=markdown
+*.json diff=json
+*.php diff=php
+
+sa_prod_screenshot.png export-ignore
