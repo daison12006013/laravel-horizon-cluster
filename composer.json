@@ -1,0 +1,23 @@
+{
+    "name": "daison/laravel-horizon-cluster",
+    "description": "A modified laravel/horizon with cluster support",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Daison\\LaravelHorizonCluster\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Daison Carino",
+            "email": "daison12006013@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "laravel/horizon": "^5.21",
+        "nesbot/carbon": "^2.17",
+        "illuminate/support": "^8.17|^9.0|^10.0"
+    }
+}
