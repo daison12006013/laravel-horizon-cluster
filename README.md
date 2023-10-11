@@ -1,4 +1,6 @@
-# Cluster support for Laravel Horizon
+![seeking's laravel horizon](sa_prod_screenshot.png)
+
+# Laravel Horizon - Cluster Support
 
 This package should support a laravel horizon thru a redis-cluster, it should also support an AWS Elastic Load Balancer.
 
