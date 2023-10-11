@@ -4,6 +4,10 @@ This package should support a laravel horizon thru a redis-cluster, it should al
 
 ## Installation
 
+```bash
+composer require daison/laravel-horizon-cluster
+```
+
 After installing this package, now publish the assets using `horizon:install`
 
 ```bash
