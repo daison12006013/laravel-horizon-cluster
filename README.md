@@ -1,3 +1,5 @@
+[![Packagist Downloads](https://img.shields.io/packagist/dt/daison/laravel-horizon-cluster)](https://packagist.org/packages/daison/laravel-horizon-cluster/stats)
+
 ![seeking's laravel horizon](sa_prod_screenshot.png)
 
 # Laravel Horizon - Cluster Support
