@@ -18,6 +18,6 @@
     "require": {
         "laravel/horizon": "^5.21",
         "nesbot/carbon": "^2.17",
-        "illuminate/support": "^8.17|^9.0|^10.0"
+        "illuminate/support": "^8.17|^9.0|^10.0|^11.0"
     }
 }
