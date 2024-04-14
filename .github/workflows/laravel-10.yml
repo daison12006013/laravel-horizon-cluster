@@ -1,0 +1,45 @@
+name: Laravel 10 - PHP 8.1
+
+on:
+  push:
+    branches:
+      # - ${{ github.ref }}
+      - '*'
+  pull_request:
+    branches:
+      # - ${{ github.base_ref }}
+      - '*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        laravel-version: ['10.*']
+        php-version: ['8.1']
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP ${{ matrix.php-version }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, dom, fileinfo, mysql
+        coverage: none
+
+    - name: Create Temporary Laravel Project using ${{ matrix.laravel-version }}
+      run: |
+        composer create-project laravel/laravel temp-laravel "${{ matrix.laravel-version }}" --prefer-dist
+        rm -rf temp-laravel
+
+    # - name: Setup Laravel Installation
+    #   run: composer require "laravel/framework:${{ matrix.laravel-version }}"
+
+    # - name: Install dependencies
+    #   run: composer install --prefer-dist --no-progress --no-suggest
+
+    # - name: Run tests (PHPUnit)
+    #   run: vendor/bin/phpunit
