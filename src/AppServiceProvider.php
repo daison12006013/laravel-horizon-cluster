@@ -37,4 +37,28 @@ class AppServiceProvider extends Base
         Contracts\TagRepository::class              => Mod\RedisTagRepository::class, // Repositories\RedisTagRepository::class,
         Contracts\WorkloadRepository::class         => Repositories\RedisWorkloadRepository::class,
     ];
+
+    /**
+     * Compilation of parent::configure + Horizon::use
+     * This change prevents downgrade from cluster to standby connection.
+     * This solves the problem: if the first node is unavailable, the connection will not throw an exception,
+     * but will connect to the next node.
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->mergeConfigFrom(
+            dirname((new \ReflectionClass(get_parent_class()))->getFileName()) . '/../config/horizon.php',
+            'horizon'
+        );
+        $use = config('horizon.use', 'default');
+        if (
+            is_null($config = config("database.redis.clusters.$use"))
+            && is_null($config = config("database.redis.$use"))
+        ) {
+            throw new \Exception("Redis connection [$use] has not been configured.");
+        }
+        $config['options']['prefix'] = config('horizon.prefix') ?: 'horizon:';
+        config(['database.redis.horizon' => $config]);
+    }
 }
