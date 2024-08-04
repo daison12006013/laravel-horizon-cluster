@@ -47,6 +47,10 @@ class AppServiceProvider extends Base
      */
     protected function configure()
     {
+        if (!config('horizon.reconnect_to_next_node_on_fail', false)) {
+            parent::configure();
+            return;
+        }
         $this->mergeConfigFrom(
             dirname((new \ReflectionClass(get_parent_class()))->getFileName()) . '/../config/horizon.php',
             'horizon'
