@@ -43,25 +43,31 @@ class AppServiceProvider extends Base
      * This change prevents downgrade from cluster to standby connection.
      * This solves the problem: if the first node is unavailable, the connection will not throw an exception,
      * but will connect to the next node.
+     *
      * @return void
      */
     protected function configure()
     {
         if (!config('horizon.reconnect_to_next_node_on_fail', false)) {
             parent::configure();
+
             return;
         }
+
         $this->mergeConfigFrom(
             dirname((new \ReflectionClass(get_parent_class()))->getFileName()) . '/../config/horizon.php',
             'horizon'
         );
+
         $use = config('horizon.use', 'default');
+
         if (
             is_null($config = config("database.redis.clusters.$use"))
             && is_null($config = config("database.redis.$use"))
         ) {
             throw new \Exception("Redis connection [$use] has not been configured.");
         }
+
         $config['options']['prefix'] = config('horizon.prefix') ?: 'horizon:';
         config(['database.redis.horizon' => $config]);
     }
