@@ -115,4 +115,30 @@ return [
 ];
 ```
 
+## config/queue.php
+
+Make sure your `'redis'` is wrapped with curly brace
+
+```
+// ...
+
+'redis-low' => [
+    // ...
+    'queue' => env('REDIS_QUEUE', '{redis-low}'),
+    // ...
+],
+
+'redis' => [
+    // ...
+    'queue' => env('REDIS_QUEUE', '{redis}'),
+    // ...
+],
+
+'redis-high' => [
+    // ...
+    'queue' => env('REDIS_QUEUE', '{redis-high}'),
+    // ...
+],
+```
+
 Enjoy using Laravel Horizon with Cluster support!
