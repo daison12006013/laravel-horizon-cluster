@@ -17,7 +17,7 @@ class RedisHorizonCommandQueue extends Base
      * @param  string  $name
      * @return array
      */
-    public function pending($name)
+    public function pending($name): array
     {
         $length = $this->connection()->llen('commands:' . $name);
 

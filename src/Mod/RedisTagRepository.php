@@ -12,13 +12,9 @@ class RedisTagRepository extends Base
     use PipelineToBlockingTrait;
 
     /**
-     * Store the tags for the given job.
-     *
-     * @param  string  $id
-     * @param  array  $tags
-     * @return void
+     * {@inheritDoc}
      */
-    public function add($id, array $tags)
+    public function add($id, array $tags): void
     {
         $this->blocking(function ($pipe) use ($id, $tags) {
             foreach ($tags as $tag) {
@@ -28,14 +24,9 @@ class RedisTagRepository extends Base
     }
 
     /**
-     * Store the tags for the given job temporarily.
-     *
-     * @param  int  $minutes
-     * @param  string  $id
-     * @param  array  $tags
-     * @return void
+     * {@inheritDoc}
      */
-    public function addTemporary($minutes, $id, array $tags)
+    public function addTemporary($minutes, $id, array $tags): void
     {
         $this->blocking(function ($pipe) use ($minutes, $id, $tags) {
             foreach ($tags as $tag) {
@@ -47,13 +38,9 @@ class RedisTagRepository extends Base
     }
 
     /**
-     * Remove the given job IDs from the given tag.
-     *
-     * @param  array|string  $tags
-     * @param  array|string  $ids
-     * @return void
+     * {@inheritDoc}
      */
-    public function forgetJobs($tags, $ids)
+    public function forgetJobs($tags, $ids): void
     {
         $this->blocking(function ($pipe) use ($tags, $ids) {
             foreach ((array) $tags as $tag) {

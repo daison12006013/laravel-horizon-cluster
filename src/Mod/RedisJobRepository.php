@@ -18,7 +18,7 @@ class RedisJobRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function getJobs(array $ids, $indexFrom = 0)
+    public function getJobs(array $ids, $indexFrom = 0): Collection
     {
         $jobs = $this->blocking(function ($pipe) use ($ids) {
             foreach ($ids as $id) {
@@ -36,7 +36,7 @@ class RedisJobRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function pushed($connection, $queue, JobPayload $payload)
+    public function pushed($connection, $queue, JobPayload $payload): void
     {
         $this->blocking(function ($pipe) use ($connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'recent_jobs', $payload);
@@ -65,7 +65,7 @@ class RedisJobRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function remember($connection, $queue, JobPayload $payload)
+    public function remember($connection, $queue, JobPayload $payload): void
     {
         $this->blocking(function ($pipe) use ($connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'monitored_jobs', $payload);
@@ -93,7 +93,7 @@ class RedisJobRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function migrated($connection, $queue, Collection $payloads)
+    public function migrated($connection, $queue, Collection $payloads): void
     {
         $this->blocking(function ($pipe) use ($payloads) {
             foreach ($payloads as $payload) {
@@ -112,7 +112,7 @@ class RedisJobRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function completed(JobPayload $payload, $failed = false, $silenced = false)
+    public function completed(JobPayload $payload, $failed = false, $silenced = false): void
     {
         if ($payload->isRetry()) {
             $this->updateRetryInformationOnParent($payload, $failed);
@@ -137,7 +137,7 @@ class RedisJobRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function deleteMonitored(array $ids)
+    public function deleteMonitored(array $ids): void
     {
         $this->blocking(function ($pipe) use ($ids) {
             foreach ($ids as $id) {
@@ -149,7 +149,7 @@ class RedisJobRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function trimRecentJobs()
+    public function trimRecentJobs(): void
     {
         $this->blocking(function ($pipe) {
             $pipe->zremrangebyscore(
@@ -187,7 +187,7 @@ class RedisJobRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function failed($exception, $connection, $queue, JobPayload $payload)
+    public function failed($exception, $connection, $queue, JobPayload $payload): void
     {
         $this->blocking(function ($pipe) use ($exception, $connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'failed_jobs', $payload);
@@ -221,7 +221,7 @@ class RedisJobRepository extends Base
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function purge($queue)
     {

@@ -15,7 +15,7 @@ class RedisProcessRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function orphaned($master, array $processIds)
+    public function orphaned($master, array $processIds): void
     {
         $time = CarbonImmutable::now()->getTimestamp();
 

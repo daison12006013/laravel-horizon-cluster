@@ -17,10 +17,10 @@ class RedisMasterSupervisorRepository extends Base
      * {@inheritDoc}
      *
      * This method overrides the original logic of horizon, pipeline is not working
-     * properly with redis cluster. Therefore we're going to blocking i/o approach
+     * properly with redis cluster. Therefore, we're going to blocking i/o approach
      * instead of atomic approach.
      */
-    public function get(array $names)
+    public function get(array $names): array
     {
         $records = $this->blocking(function ($pipe) use ($names) {
             foreach ($names as $name) {
@@ -43,7 +43,7 @@ class RedisMasterSupervisorRepository extends Base
     /**
      * {@inheritDoc}
      */
-    public function update(MasterSupervisor $master)
+    public function update(MasterSupervisor $master): void
     {
         $supervisors = $master->supervisors->map->name->all();
 

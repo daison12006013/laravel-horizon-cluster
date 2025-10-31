@@ -14,9 +14,9 @@ class RedisSupervisorRepository extends Base
     use PipelineToBlockingTrait;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function get(array $names)
+    public function get(array $names): array
     {
         $records = $this->blocking(function ($pipe) use ($names) {
             foreach ($names as $name) {
@@ -39,9 +39,9 @@ class RedisSupervisorRepository extends Base
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function forget($names)
+    public function forget($names): void
     {
         $names = (array) $names;
 
@@ -68,7 +68,10 @@ class RedisSupervisorRepository extends Base
         $this->connection()->zrem('supervisors', ...$names);
     }
 
-    public function update(Supervisor $supervisor)
+    /**
+     * {@inheritDoc}
+     */
+    public function update(Supervisor $supervisor): void
     {
         $processes = $supervisor->processPools->mapWithKeys(function ($pool) use ($supervisor) {
             return [$supervisor->options->connection . ':' . $pool->queue() => count($pool->processes())];
