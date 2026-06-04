@@ -7,6 +7,7 @@ use Laravel\Horizon\Contracts;
 use Laravel\Horizon\HorizonServiceProvider as Base;
 use Laravel\Horizon\Listeners;
 use Laravel\Horizon\Lock;
+use Laravel\Horizon\Notifications;
 use Laravel\Horizon\Repositories;
 use Laravel\Horizon\Stopwatch;
 
@@ -35,6 +36,9 @@ class AppServiceProvider extends Base
         Contracts\SupervisorRepository::class       => Mod\RedisSupervisorRepository::class, // Repositories\RedisSupervisorRepository::class
         Contracts\TagRepository::class              => Mod\RedisTagRepository::class, // Repositories\RedisTagRepository::class,
         Contracts\WorkloadRepository::class         => Repositories\RedisWorkloadRepository::class,
+
+        // Notifications...
+        Contracts\LongWaitDetectedNotification::class => Notifications\LongWaitDetected::class,
     ];
 
     /**
