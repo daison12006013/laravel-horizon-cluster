@@ -2,8 +2,10 @@
 
 namespace Daison\LaravelHorizonCluster;
 
+use Illuminate\Redis\Connections\Connection;
 use Laravel\Horizon\AutoScaler;
 use Laravel\Horizon\Contracts;
+use Laravel\Horizon\Horizon;
 use Laravel\Horizon\HorizonServiceProvider as Base;
 use Laravel\Horizon\Listeners;
 use Laravel\Horizon\Lock;
@@ -51,27 +53,67 @@ class AppServiceProvider extends Base
      */
     protected function configure(): void
     {
-        if (!config('horizon.reconnect_to_next_node_on_fail', false)) {
-            parent::configure();
-
-            return;
-        }
-
         $this->mergeConfigFrom(
             dirname((new \ReflectionClass(get_parent_class($this)))->getFileName()) . '/../config/horizon.php',
             'horizon'
         );
 
-        $use = config('horizon.use', 'default');
+        $use = $this->normalizeConnectionName(config('horizon.use', 'default'));
 
-        if (
-            is_null($config = config("database.redis.clusters.$use"))
-            && is_null($config = config("database.redis.$use"))
-        ) {
-            throw new \Exception("Redis connection [$use] has not been configured.");
+        if (!config('horizon.reconnect_to_next_node_on_fail', false)) {
+            Horizon::use($use);
+
+            return;
         }
 
-        $config['options']['prefix'] = config('horizon.prefix') ?: 'horizon:';
+        if (! is_null($config = config("database.redis.clusters.$use"))) {
+            $this->configureClusterConnection($config);
+
+            return;
+        }
+
+        if (! is_null($config = config("database.redis.$use"))) {
+            $this->configureStandaloneConnection($config);
+
+            return;
+        }
+
+        throw new \Exception("Redis connection [$use] has not been configured.");
+    }
+
+    protected function normalizeConnectionName(string $connection): string
+    {
+        return str_starts_with($connection, 'clusters.')
+            ? substr($connection, strlen('clusters.'))
+            : $connection;
+    }
+
+    protected function configureClusterConnection(array $config): void
+    {
+        if (! method_exists(Connection::class, 'hasHashTag')) {
+            $this->configureStandaloneConnection($config[0]);
+
+            return;
+        }
+
+        $prefix = $this->ensureHashTaggedPrefix(config('horizon.prefix') ?: 'horizon:');
+
+        $config['options']['prefix'] = $prefix;
+
+        config(['horizon.prefix' => $prefix]);
+        config(['database.redis.clusters.horizon' => $config]);
+    }
+
+    protected function configureStandaloneConnection(array $config): void
+    {
+        $config['options']['prefix'] = $prefix = config('horizon.prefix') ?: 'horizon:';
+
+        config(['horizon.prefix' => $prefix]);
         config(['database.redis.horizon' => $config]);
+    }
+
+    protected function ensureHashTaggedPrefix(string $prefix): string
+    {
+        return Connection::hasHashTag($prefix) ? $prefix : '{'.$prefix.'}';
     }
 }
